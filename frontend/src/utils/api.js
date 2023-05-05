@@ -97,7 +97,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'http://api.mesto63.nomoredomains.monster',
+  baseUrl: 'https://api.mesto63.nomoredomains.monster',
   // headers: {
   //   authorization: '60cd4e7e-5160-4d08-8f0d-74282e71abaa',
   //   'Content-Type': 'application/json',
