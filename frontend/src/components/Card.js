@@ -5,8 +5,6 @@ function Card(card) {
   const currentUser = React.useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
 
-  //console.log(card)
-
   const isLiked = card.likes.some((id) => id === currentUser._id);
 
   const cardLikeButtonClassName = `element__like-button ${

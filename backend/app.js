@@ -6,11 +6,7 @@ const cors = require('cors');
 const routes = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const {
-  PORT = 3000,
-  BASE_PATH = 'localhost',
-  DB_CONN = 'mongodb://127.0.0.1:27017/mestodb',
-} = process.env;
+const { PORT, BASE_PATH, DB_CONN } = require('./config');
 
 const app = express();
 
