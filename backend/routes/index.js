@@ -18,7 +18,7 @@ router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 router.use((req, res, next) => {
   const newError = new NotFoundError('Данная страница не существует');
-  errorHandler(newError, req, res, next);
+  errorHandler(newError, res, next);
 });
 
 module.exports = router;
