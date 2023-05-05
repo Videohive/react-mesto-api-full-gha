@@ -7,17 +7,17 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 function errorHandler(err, req, res, next) {
   if (err instanceof NotFoundError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else if (err instanceof BadRequestError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else if (err instanceof ServerError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else if (err instanceof ConflictError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else if (err instanceof UnauthorizedError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else if (err instanceof ForbiddenError) {
-    res.status(err.status).send({ error: err.message });
+    res.status(err.status).send({ message: err.message });
   } else {
     next(err);
   }
