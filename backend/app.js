@@ -1,8 +1,6 @@
 require('dotenv').config();
-const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const routes = require('./routes/index');
@@ -22,8 +20,8 @@ mongoose.connect(DB_CONN, {
   .then(() => console.log('Успешное подключение к MongoDB'))
   .catch((err) => console.error('Ошибка подключения:', err));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: '*',
@@ -40,8 +38,6 @@ app.use(routes);
 app.use(errorLogger);
 
 app.use(errors());
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => {
   console.log('Ссылка на сервер:', `${BASE_PATH}:${PORT}`);
