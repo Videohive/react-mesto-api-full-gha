@@ -1,0 +1,11 @@
+.element__image {
+  height: 282px;
+  object-fit: cover;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+}
+
+.element__image:hover {
+  transform: scale(1.15);
+  cursor: pointer;
+}

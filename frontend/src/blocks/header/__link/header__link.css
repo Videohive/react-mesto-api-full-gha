@@ -1,0 +1,7 @@
+.header__link {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-family: "Inter";
+  font-style: normal;
+}
