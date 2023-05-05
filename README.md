@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.16.224
+IP 158.160.16.224
 
 Frontend https://mesto63.nomoredomains.monster
 
