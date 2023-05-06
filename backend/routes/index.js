@@ -7,7 +7,6 @@ const { validateLogin, validateRegister } = require('../utils/validate/userValid
 const auth = require('../middlewares/auth');
 
 const NotFoundError = require('../errors/NotFoundError');
-const { errorHandler } = require('../utils/customErrors');
 
 router.post('/signin', validateLogin, login);
 router.post('/signup', validateRegister, createUser);
@@ -18,7 +17,7 @@ router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 router.use((req, res, next) => {
   const newError = new NotFoundError('Данная страница не существует');
-  errorHandler(newError, res, next);
+  next(newError);
 });
 
 module.exports = router;

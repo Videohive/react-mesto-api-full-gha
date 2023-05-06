@@ -5,7 +5,7 @@ const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
-function errorHandler(err, res, next) {
+function errorHandler(err, req, res, next) {
   if (err instanceof NotFoundError) {
     res.status(err.status).send({ message: err.message });
   } else if (err instanceof BadRequestError) {
