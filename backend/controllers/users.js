@@ -5,40 +5,36 @@ const { NotFoundError, BadRequestError, ConflictError } = require('../utils/cust
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
+const findUser = (query) => User.findById(query)
+  .then((user) => {
+    if (!user) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    return user;
+  })
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      throw new BadRequestError('Некорректный id пользователя');
+    }
+    throw err;
+  });
+
 module.exports.getUserById = (req, res, next) => {
-  const _id = req.params.userId;
-  User.findById({ _id })
-    .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
-        throw new NotFoundError('Пользователь не найден');
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Некорректный id пользователя'));
-        return;
-      }
-      next(err);
-    });
+  findUser({ _id: req.params.userId })
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
+module.exports.getCurrentUser = (req, res, next) => {
+  findUser({ _id: req.user._id })
+    .then((user) => res.send(user))
+    .catch(next);
 };
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => next(err));
-};
-
-module.exports.getCurrentUser = (req, res, next) => {
-  const { _id } = req.user;
-  User.findById({ _id })
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
-      res.send(user);
-    }).catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
