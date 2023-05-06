@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { NotFoundError, BadRequestError } = require('../utils/customErrors');
+const { NotFoundError, BadRequestError, ConflictError } = require('../utils/customErrors');
 const { handleErrors, handleErrorNotFound } = require('../utils/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -42,22 +42,35 @@ module.exports.getCurrentUser = (req, res, next) => {
     }).catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
       name, about, avatar, email, password: hash,
-    })
-      .then(() => res.status(201).send({
+    }))
+    .then(() => {
+      res.send({
         data: {
           name, about, avatar, email,
         },
-      }))
-      .catch((err) => handleErrors(err, res));
-  });
+      });
+      return null;
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Некорректные данные'));
+        return;
+      }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь уже зарегистрирован'));
+        return;
+      }
+      next(err);
+    });
 };
+
 const updateUser = (req, res, updateData) => {
   User.findByIdAndUpdate(
     req.user._id,
