@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const { NotFoundError, BadRequestError, ConflictError } = require('../utils/customErrors');
-const { handleErrors, handleErrorNotFound } = require('../utils/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -60,7 +59,7 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Некорректные данные'));
+        next(new BadRequestError('Переданы некорректные данные'));
         return;
       }
       if (err.code === 11000) {
@@ -71,7 +70,7 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-const updateUser = (req, res, updateData) => {
+const updateUser = (req, res, next, updateData) => {
   User.findByIdAndUpdate(
     req.user._id,
     updateData,
@@ -81,10 +80,20 @@ const updateUser = (req, res, updateData) => {
       if (user) {
         res.send(user);
       } else {
-        handleErrorNotFound(res, 'Пользователь по указанному id не найден');
+        throw new NotFoundError('Пользователь не найден');
       }
     })
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Некорректный id пользователя'));
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+        return;
+      }
+      next(err);
+    });
 };
 
 module.exports.updateUserInfo = (req, res) => {
